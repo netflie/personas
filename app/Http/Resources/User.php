@@ -17,8 +17,20 @@ class User extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        $data['accounts']['data'] = Account::collection($this->accounts()->paginate(static::MAX_ACCOUNTS));
-        $data['accounts']['links']['all'] = 'http://';
+        $data += $this->getAccountsData();
+
+
+        return $data;
+    }
+
+    private function getAccountsData()
+    {
+        $accounts = $this->accounts()->paginate(static::MAX_ACCOUNTS);
+
+        $data['accounts']['data'] = Account::collection($accounts);
+        $data['accounts']['links']['all'] = route('user.accounts', ['user' => $this->id]);
+        $data['accounts']['meta']['total'] = $accounts->total();
+        $data['accounts']['meta']['per_page'] = $accounts->perPage();
 
         return $data;
     }
