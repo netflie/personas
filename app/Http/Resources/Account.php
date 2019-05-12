@@ -17,8 +17,18 @@ class Account extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        $data['transactions']['data'] = Transaction::collection($this->transactions()->paginate(static::MAX_TRANSACTIONS));
-        $data['transactions']['links']['all'] = "http://";
+        $data += $this->getTransactionsData();
+
+        return $data;
+    }
+
+    private function getTransactionsData()
+    {
+        $transactions = $this->transactions()->paginate(static::MAX_TRANSACTIONS);
+        $data['transactions']['data'] = Transaction::collection($transactions);
+        $data['transactions']['links']['all'] = route('account.transactions', ['account' => $this->id]);
+        $data['transactions']['meta']['total'] = $transactions->total();
+        $data['transactions']['meta']['per_page'] = $transactions->perPage();
 
         return $data;
     }
