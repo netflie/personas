@@ -30,9 +30,14 @@ Route::get(
 	'HomeController@index'
 )->name('home');
 
+// Users
 Route::apiResources([
 	'users' => 'UserController',
 ]);
+
+Route::get('/me', function () {
+    return redirect()->action('UserController@show', ['user' => auth()->user()]);
+});
 
 // Accounts
 Route::get(
