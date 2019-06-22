@@ -30,7 +30,7 @@ Route::get(
 	'HomeController@index'
 )->name('home');
 
-Route::resources([
+Route::apiResources([
 	'users' => 'UserController',
 ]);
 
